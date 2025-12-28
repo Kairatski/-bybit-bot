@@ -29,6 +29,8 @@ bot.onText(/\/start/, (msg) => {
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
+  
+  console.log(`DEBUG: "${text}"`);  ← ВОТ ЗДЕСЬ! (НОВАЯ СТРОКА)
 
   if (!text) return; // Игнор медиа
 
