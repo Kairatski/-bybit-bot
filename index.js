@@ -9,7 +9,6 @@ const client = new RestClientV5({ testnet: false });
 let alerts = {};
 let userStates = {};
 
-// 🆕 INLINE КНОПКИ (как на скрине)
 const mainKeyboard = {
   reply_markup: {
     keyboard: [
@@ -20,22 +19,17 @@ const mainKeyboard = {
   }
 };
 
-// /start
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, '🚀 Bybit Price Alerts готов!\nВыбери действие:', mainKeyboard);
   console.log('✅ /start:', msg.chat.id);
 });
 
-// 🆕 ОБРАБОТКА КНОПОК (reply_keyboard)
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
-  
-  console.log(`DEBUG: "${text}"`);
 
-  if (!text) return; // Игнор медиа
+  if (!text) return;
 
-  // КНОПКИ
   if (text === '🔔 Добавить') {
     userStates[chatId] = { waitingFor: 'add' };
     bot.sendMessage(chatId, '📝 Введите токен и цену:\nПример: BTC 100000 >', mainKeyboard);
@@ -59,7 +53,6 @@ bot.on('message', async (msg) => {
     bot.sendMessage(chatId, '✅ Готово к приёму оповещения!', mainKeyboard);
     console.log('🔄 Обновить:', chatId);
   }
-  // ВВОД оповещения
   else if (userStates[chatId]?.waitingFor === 'add') {
     const match = text.match(/([A-Z]{3,})(?:\s+USDT)?\s+(\d+(?:\.\d+)?)\s*([><=])?/i);
     if (match) {
@@ -104,7 +97,6 @@ bot.on('message', async (msg) => {
   }
 });
 
-// ⚡ ЧЕКЕР КАЖДЫЕ 30 СЕКУНД
 setInterval(async () => {
   for (const chatId in alerts) {
     for (let i = 0; i < alerts[chatId].length; i++) {
@@ -136,7 +128,6 @@ setInterval(async () => {
           }
         }
       } catch (e) {
-        // Тихо игнорим API ошибки
       }
     }
   }
@@ -153,7 +144,6 @@ function loadAlerts() {
 }
 loadAlerts();
 
-// 🔴 FIX Render: HTTP server for port binding
 const PORT = process.env.PORT || 3000;
 http.createServer((req, res) => {
   res.writeHead(200);
