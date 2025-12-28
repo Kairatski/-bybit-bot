@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { RestClientV5 } = require('bybit-api');
 const TelegramBot = require('node-telegram-bot-api');
+const http = require('http');
 
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
@@ -30,7 +31,7 @@ bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
   
-  console.log(`DEBUG: "${text}"`);  ← ВОТ ЗДЕСЬ! (НОВАЯ СТРОКА)
+  console.log(`DEBUG: "${text}"`);
 
   if (!text) return; // Игнор медиа
 
@@ -151,5 +152,14 @@ function loadAlerts() {
   } catch (e) {}
 }
 loadAlerts();
+
+// 🔴 FIX Render: HTTP server for port binding
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end('Bybit Bot OK');
+}).listen(PORT, () => {
+  console.log(`🌐 Server listening on port ${PORT}`);
+});
 
 console.log('🚀 Бот ГОТОВ 24/7!');
