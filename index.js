@@ -146,10 +146,15 @@ loadAlerts();
 
 const PORT = process.env.PORT || 3000;
 http.createServer((req, res) => {
-  res.writeHead(200);
-  res.end('Bybit Bot OK');
+  if (req.url === '/ping') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'alive', timestamp: new Date() }));
+  } else {
+    res.writeHead(200);
+    res.end('Bybit Bot OK');
+  }
 }).listen(PORT, () => {
-  console.log(`🌐 Server listening on port ${PORT}`);
+  console.log('✅ Server listening on port ${PORT}');
 });
 
 console.log('🚀 Бот ГОТОВ 24/7!');
